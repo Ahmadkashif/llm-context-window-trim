@@ -1,0 +1,2 @@
+# govulncheck v1.1.4, commit 2aedc62, go version go1.26.9 linux/amd64
+No vulnerabilities found.

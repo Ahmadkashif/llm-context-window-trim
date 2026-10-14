@@ -1,6 +1,6 @@
 # compose demo: edge (Caddy) -> ctxtrim -> api-1/api-2 (fakellm, 8192); portal-shim -> api-1
-2026-10-14T20:53:17Z
-commit: 1350fdbe681abc72a086b19d4b36713a3e98306c
+2026-10-14T21:03:52Z
+commit: 2aedc626fbbf9b3ae3987eea0f8f8d157cf4ce67
 api-1 ctxtrim-poc:local running 
 api-2 ctxtrim-poc:local running 
 ctxtrim ctxtrim-poc:local running 
@@ -16,12 +16,12 @@ portal-shim ctxtrim-poc:local running 127.0.0.1:18482->8080/tcp
 RESULT: PASS (before fails at turn 10; api 40/40; portal 40/40)
 
 # bench through the edge: Caddy -> ctxtrim -> 2 replicas, vs the demo-only bypass route
-label=edge-bypass  hist=3000w c=4 ok=80 errors=0 body_bytes=23180 wall_s=6.2 ttft_p50_ms=53.5 ttft_p95_ms=55.0 total_p50_ms=310.8 total_p95_ms=318.3
-label=edge+ctxtrim hist=3000w c=4 ok=80 errors=0 body_bytes=23180 wall_s=6.2 ttft_p50_ms=52.9 ttft_p95_ms=58.9 total_p50_ms=308.8 total_p95_ms=313.3
-label=edge-bypass  hist=3000w c=8 ok=160 errors=0 body_bytes=23180 wall_s=6.3 ttft_p50_ms=51.9 ttft_p95_ms=54.6 total_p50_ms=310.9 total_p95_ms=322.4
-label=edge+ctxtrim hist=3000w c=8 ok=160 errors=0 body_bytes=23180 wall_s=6.2 ttft_p50_ms=52.2 ttft_p95_ms=56.0 total_p50_ms=310.2 total_p95_ms=315.5
-label=edge-bypass  hist=3000w c=16 ok=320 errors=0 body_bytes=23180 wall_s=6.3 ttft_p50_ms=51.6 ttft_p95_ms=53.8 total_p50_ms=314.3 total_p95_ms=319.9
-label=edge+ctxtrim hist=3000w c=16 ok=320 errors=0 body_bytes=23180 wall_s=6.3 ttft_p50_ms=52.5 ttft_p95_ms=54.1 total_p50_ms=316.7 total_p95_ms=319.1
+label=edge-bypass  hist=3000w c=4 ok=80 errors=0 body_bytes=23180 wall_s=6.2 ttft_p50_ms=53.1 ttft_p95_ms=55.4 total_p50_ms=310.0 total_p95_ms=321.1
+label=edge+ctxtrim hist=3000w c=4 ok=80 errors=0 body_bytes=23180 wall_s=6.2 ttft_p50_ms=55.2 ttft_p95_ms=59.1 total_p50_ms=311.3 total_p95_ms=314.7
+label=edge-bypass  hist=3000w c=8 ok=160 errors=0 body_bytes=23180 wall_s=6.3 ttft_p50_ms=51.7 ttft_p95_ms=54.6 total_p50_ms=310.9 total_p95_ms=322.5
+label=edge+ctxtrim hist=3000w c=8 ok=160 errors=0 body_bytes=23180 wall_s=6.2 ttft_p50_ms=52.2 ttft_p95_ms=58.7 total_p50_ms=309.7 total_p95_ms=318.7
+label=edge-bypass  hist=3000w c=16 ok=320 errors=0 body_bytes=23180 wall_s=6.3 ttft_p50_ms=51.5 ttft_p95_ms=55.9 total_p50_ms=316.0 total_p95_ms=321.6
+label=edge+ctxtrim hist=3000w c=16 ok=320 errors=0 body_bytes=23180 wall_s=6.3 ttft_p50_ms=52.0 ttft_p95_ms=54.5 total_p50_ms=314.1 total_p95_ms=319.7
 
 # hardening of the running containers
 /ctxtrim-poc-api-1-1 user=nonroot read_only=true cap_drop=[ALL] cap_add=[]
@@ -31,6 +31,6 @@ label=edge+ctxtrim hist=3000w c=16 ok=320 errors=0 body_bytes=23180 wall_s=6.3 t
 /ctxtrim-poc-portal-shim-1 user=nonroot read_only=true cap_drop=[ALL] cap_add=[]
 
 # last ctxtrim trim log lines
-{"time":"2026-10-14T20:53:22.997788761Z","level":"INFO","msg":"context trimmed","dropped":62,"truncated":false,"est_before":38155,"est_after":6941,"budget":7424}
-{"time":"2026-10-14T20:53:23.124525018Z","level":"INFO","msg":"context trimmed","dropped":64,"truncated":false,"est_before":39146,"est_after":6939,"budget":7424}
-{"time":"2026-10-14T20:53:23.251873781Z","level":"INFO","msg":"context trimmed","dropped":66,"truncated":false,"est_before":40065,"est_after":6660,"budget":7424}
+{"time":"2026-10-14T21:03:57.445719876Z","level":"INFO","msg":"context trimmed","dropped":62,"truncated":false,"est_before":38155,"est_after":6941,"budget":7424}
+{"time":"2026-10-14T21:03:57.52081778Z","level":"INFO","msg":"context trimmed","dropped":64,"truncated":false,"est_before":39146,"est_after":6939,"budget":7424}
+{"time":"2026-10-14T21:03:57.645376974Z","level":"INFO","msg":"context trimmed","dropped":66,"truncated":false,"est_before":40065,"est_after":6660,"budget":7424}

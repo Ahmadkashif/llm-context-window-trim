@@ -4,35 +4,35 @@
 ?   	github.com/Ahmadkashif/llm-context-window-trim/cmd/fakellm	[no test files]
 ?   	github.com/Ahmadkashif/llm-context-window-trim/cmd/personashim	[no test files]
 === RUN   TestBeforeAfterOverflow
-2026/10/15 01:51:27 INFO context trimmed dropped=102 truncated=false est_before=48551 est_after=7312 budget=7424
---- PASS: TestBeforeAfterOverflow (0.06s)
+2026/10/15 02:02:02 INFO context trimmed dropped=102 truncated=false est_before=48551 est_after=7312 budget=7424
+--- PASS: TestBeforeAfterOverflow (0.09s)
 === RUN   TestOversizeTurnIs400WithoutTouchingUpstream
-2026/10/15 01:51:27 INFO context too large kept_tokens=60027 budget=8092
---- PASS: TestOversizeTurnIs400WithoutTouchingUpstream (0.08s)
+2026/10/15 02:02:02 INFO context too large kept_tokens=60027 budget=8092
+--- PASS: TestOversizeTurnIs400WithoutTouchingUpstream (0.12s)
 === RUN   TestStreamingPassesThrough
-2026/10/15 01:51:28 INFO context trimmed dropped=102 truncated=false est_before=48551 est_after=7312 budget=7680
---- PASS: TestStreamingPassesThrough (0.23s)
+2026/10/15 02:02:02 INFO context trimmed dropped=102 truncated=false est_before=48551 est_after=7312 budget=7680
+--- PASS: TestStreamingPassesThrough (0.19s)
 === RUN   TestOtherRoutesUntouched
 --- PASS: TestOtherRoutesUntouched (0.01s)
 === RUN   TestRoundRobin
 --- PASS: TestRoundRobin (0.08s)
 === RUN   TestPersonaInjectedBeforeTrimIsKept
-2026/10/15 01:51:28 INFO context trimmed dropped=102 truncated=false est_before=48578 est_after=7339 budget=7424
---- PASS: TestPersonaInjectedBeforeTrimIsKept (0.08s)
+2026/10/15 02:02:03 INFO context trimmed dropped=102 truncated=false est_before=48578 est_after=7339 budget=7424
+--- PASS: TestPersonaInjectedBeforeTrimIsKept (0.26s)
 PASS
-ok  	github.com/Ahmadkashif/llm-context-window-trim/proxy	1.561s
+ok  	github.com/Ahmadkashif/llm-context-window-trim/proxy	1.773s
 === RUN   TestFitsUntouchedReturnsOriginalBytes
 --- PASS: TestFitsUntouchedReturnsOriginalBytes (0.00s)
 === RUN   TestDropsOldestTurnsKeepsSystemAndLatest
 --- PASS: TestDropsOldestTurnsKeepsSystemAndLatest (0.03s)
 === RUN   TestKeepsMidConversationSystemMessages
---- PASS: TestKeepsMidConversationSystemMessages (0.02s)
+--- PASS: TestKeepsMidConversationSystemMessages (0.04s)
 === RUN   TestNeverSplitsToolResultFromItsTurn
---- PASS: TestNeverSplitsToolResultFromItsTurn (0.01s)
+--- PASS: TestNeverSplitsToolResultFromItsTurn (0.02s)
 === RUN   TestRejectsWhenLatestTurnAloneTooBig
---- PASS: TestRejectsWhenLatestTurnAloneTooBig (0.01s)
+--- PASS: TestRejectsWhenLatestTurnAloneTooBig (0.02s)
 === RUN   TestTruncateModeKeepsTailOfLatestTurn
---- PASS: TestTruncateModeKeepsTailOfLatestTurn (0.02s)
+--- PASS: TestTruncateModeKeepsTailOfLatestTurn (0.04s)
 === RUN   TestDefaultMaxTokensIsWrittenWhenMissing
 --- PASS: TestDefaultMaxTokensIsWrittenWhenMissing (0.00s)
 === RUN   TestRequestedMaxTokensLargerThanWindowRejected
@@ -53,15 +53,15 @@ ok  	github.com/Ahmadkashif/llm-context-window-trim/proxy	1.561s
     --- PASS: FuzzFitNeverExceedsBudgetOrDropsPinned/seed#0 (0.01s)
     --- SKIP: FuzzFitNeverExceedsBudgetOrDropsPinned/seed#1 (0.00s)
 PASS
-ok  	github.com/Ahmadkashif/llm-context-window-trim/trim	1.114s
-fuzz: elapsed: 0s, gathering baseline coverage: 0/203 completed
-fuzz: elapsed: 0s, gathering baseline coverage: 203/203 completed, now fuzzing with 16 workers
-fuzz: elapsed: 3s, execs: 29880 (9959/sec), new interesting: 12 (total: 215)
-fuzz: elapsed: 6s, execs: 63886 (11334/sec), new interesting: 12 (total: 215)
-fuzz: elapsed: 9s, execs: 97041 (11051/sec), new interesting: 12 (total: 215)
-fuzz: elapsed: 12s, execs: 129704 (10876/sec), new interesting: 12 (total: 215)
-fuzz: elapsed: 15s, execs: 162780 (11039/sec), new interesting: 12 (total: 215)
-fuzz: elapsed: 18s, execs: 196163 (11128/sec), new interesting: 12 (total: 215)
-fuzz: elapsed: 20s, execs: 215403 (9201/sec), new interesting: 12 (total: 215)
+ok  	github.com/Ahmadkashif/llm-context-window-trim/trim	1.176s
+fuzz: elapsed: 0s, gathering baseline coverage: 0/217 completed
+fuzz: elapsed: 0s, gathering baseline coverage: 217/217 completed, now fuzzing with 16 workers
+fuzz: elapsed: 3s, execs: 31730 (10576/sec), new interesting: 3 (total: 220)
+fuzz: elapsed: 6s, execs: 64976 (11082/sec), new interesting: 3 (total: 220)
+fuzz: elapsed: 9s, execs: 97972 (10996/sec), new interesting: 3 (total: 220)
+fuzz: elapsed: 12s, execs: 130184 (10739/sec), new interesting: 3 (total: 220)
+fuzz: elapsed: 15s, execs: 162141 (10635/sec), new interesting: 3 (total: 220)
+fuzz: elapsed: 18s, execs: 194617 (10843/sec), new interesting: 3 (total: 220)
+fuzz: elapsed: 20s, execs: 215423 (9902/sec), new interesting: 3 (total: 220)
 PASS
-ok  	github.com/Ahmadkashif/llm-context-window-trim/trim	20.106s
+ok  	github.com/Ahmadkashif/llm-context-window-trim/trim	20.111s

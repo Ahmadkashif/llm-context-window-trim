@@ -65,7 +65,7 @@ samples of English prose, Python and Go code, JSON, 10 languages, emoji, numbers
 
 ## Run it
 
-Requirements: Go ≥ 1.26 and Python ≥ 3.10 (for the SDK demo and the tokenizer checks). Docker with
+Requirements: Go ≥ 1.26 (go.mod pins toolchain go1.26.9, which Go downloads automatically) and Python ≥ 3.10 (for the SDK demo and the tokenizer checks). Docker with
 Compose v2 is optional, for the edge demo.
 
 ```bash
@@ -90,7 +90,7 @@ Then point only `POST /v1/chat/completions` at it from your edge (see `deploy/Ca
 `/metrics`. Trimmed responses carry `X-Context-Dropped-Messages` and `X-Context-Estimated-Tokens`.
 The middleware never logs prompt content, only counts.
 
-## What was verified (commit `1350fdb`, files in `evidence/`)
+## What was verified (commit `2aedc62`, files in `evidence/`)
 
 | Check | Result |
 |---|---|
@@ -100,9 +100,10 @@ The middleware never logs prompt content, only counts.
 | After, portal path (persona shim, in-process trim) | **40/40 turns OK**; persona was the first message in **40/40** forwarded requests |
 | Every request the inference server received after trimming, re-counted with the real Qwen3 tokenizer | **0 of 80 over the window**; fullest was 74.4% (`03-real-tokenizer-check.txt`) |
 | Estimator vs real tokenizer | 78/79 conservative; worst miss −2.0% (`04-calibration.txt`) |
-| Overhead at 4/8/16 concurrent streams, direct vs through ctxtrim (bare processes) | TTFT p50 +3.9 / +4.9 / +0.4 ms; p95 +4.4 / +6.9 / +13.4 ms; 0 errors in 1,120 requests (`05-bench.txt`) |
-| Same through the Docker stack, Caddy → ctxtrim → 2 replicas vs Caddy straight to the replicas | TTFT p50 within ±1 ms; p95 +0.3 to +3.9 ms; 0 errors (`06-compose-demo.txt`) |
-| Trim CPU cost (Go micro-benchmark) | 1.9 ms per 19 KB request that fits, 8.8 ms per 77 KB request that is trimmed. `encoding/json` is the bulk of it (`07-go-microbench.txt`) |
+| Overhead at 4/8/16 concurrent streams, direct vs through ctxtrim (bare processes) | TTFT p50 +4.2 / +6.7 / +3.2 ms; p95 +4.4 / +6.5 / +12.1 ms; 0 errors in 1,120 requests (`05-bench.txt`) |
+| Same through the Docker stack, Caddy → ctxtrim → 2 replicas vs Caddy straight to the replicas | TTFT p50 +0.5 to +2.1 ms; p95 −1.4 to +4.1 ms; 0 errors (`06-compose-demo.txt`) |
+| Trim CPU cost (Go micro-benchmark) | 1.8 ms per 19 KB request that fits, 7.7 ms per 77 KB request that is trimmed. `encoding/json` is the bulk of it (`07-go-microbench.txt`) |
+| `govulncheck` (go1.26.9 toolchain, pinned in go.mod) | No vulnerabilities found (`08-govulncheck.txt`). go1.26.2 had 20 standard-library advisories, which is why the toolchain is pinned |
 | Containers | all non-root, read-only, `cap_drop: ALL`. The edge needs `NET_BIND_SERVICE` back because the official Caddy binary has a file capability (`06-compose-demo.txt`) |
 
 For scale: on a single 8 GB GPU serving a 4B model, time to first token at 16 streams is in the

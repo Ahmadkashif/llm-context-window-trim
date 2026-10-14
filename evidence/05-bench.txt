@@ -1,13 +1,13 @@
 # fakellm: TTFT 50 ms, 5 ms/token, 48-token replies; 20 requests per stream
-label=direct  hist=3000w c=4 ok=80 errors=0 body_bytes=23180 wall_s=6.4 ttft_p50_ms=53.1 ttft_p95_ms=54.7 total_p50_ms=316.1 total_p95_ms=332.5
-label=ctxtrim hist=3000w(fits) c=4 ok=80 errors=0 body_bytes=23180 wall_s=6.4 ttft_p50_ms=57.0 ttft_p95_ms=59.1 total_p50_ms=316.4 total_p95_ms=332.8
-label=ctxtrim hist=12000w(trimmed) c=4 ok=80 errors=0 body_bytes=92270 wall_s=6.5 ttft_p50_ms=58.2 ttft_p95_ms=73.3 total_p50_ms=319.8 total_p95_ms=344.0
-label=direct  hist=3000w c=8 ok=160 errors=0 body_bytes=23180 wall_s=6.6 ttft_p50_ms=54.3 ttft_p95_ms=55.7 total_p50_ms=330.4 total_p95_ms=338.5
-label=ctxtrim hist=3000w(fits) c=8 ok=160 errors=0 body_bytes=23180 wall_s=6.6 ttft_p50_ms=59.2 ttft_p95_ms=62.6 total_p50_ms=331.5 total_p95_ms=342.5
-label=ctxtrim hist=12000w(trimmed) c=8 ok=160 errors=0 body_bytes=92270 wall_s=6.8 ttft_p50_ms=68.0 ttft_p95_ms=77.4 total_p50_ms=340.1 total_p95_ms=358.7
-label=direct  hist=3000w c=16 ok=320 errors=0 body_bytes=23180 wall_s=6.6 ttft_p50_ms=53.9 ttft_p95_ms=57.1 total_p50_ms=329.2 total_p95_ms=336.8
-label=ctxtrim hist=3000w(fits) c=16 ok=320 errors=0 body_bytes=23180 wall_s=6.7 ttft_p50_ms=54.3 ttft_p95_ms=70.5 total_p50_ms=333.5 total_p95_ms=352.3
-label=ctxtrim hist=12000w(trimmed) c=16 ok=320 errors=0 body_bytes=92270 wall_s=6.9 ttft_p50_ms=59.1 ttft_p95_ms=89.7 total_p50_ms=337.7 total_p95_ms=369.2
+label=direct  hist=3000w c=4 ok=80 errors=0 body_bytes=23180 wall_s=6.3 ttft_p50_ms=53.0 ttft_p95_ms=55.5 total_p50_ms=314.5 total_p95_ms=322.7
+label=ctxtrim hist=3000w(fits) c=4 ok=80 errors=0 body_bytes=23180 wall_s=6.4 ttft_p50_ms=57.2 ttft_p95_ms=59.9 total_p50_ms=320.9 total_p95_ms=335.3
+label=ctxtrim hist=12000w(trimmed) c=4 ok=80 errors=0 body_bytes=92270 wall_s=6.5 ttft_p50_ms=58.2 ttft_p95_ms=69.9 total_p50_ms=319.3 total_p95_ms=341.3
+label=direct  hist=3000w c=8 ok=160 errors=0 body_bytes=23180 wall_s=6.6 ttft_p50_ms=53.4 ttft_p95_ms=55.9 total_p50_ms=330.8 total_p95_ms=337.1
+label=ctxtrim hist=3000w(fits) c=8 ok=160 errors=0 body_bytes=23180 wall_s=6.7 ttft_p50_ms=60.1 ttft_p95_ms=62.4 total_p50_ms=337.0 total_p95_ms=341.8
+label=ctxtrim hist=12000w(trimmed) c=8 ok=160 errors=0 body_bytes=92270 wall_s=6.8 ttft_p50_ms=68.5 ttft_p95_ms=77.2 total_p50_ms=339.5 total_p95_ms=357.1
+label=direct  hist=3000w c=16 ok=320 errors=0 body_bytes=23180 wall_s=6.6 ttft_p50_ms=54.3 ttft_p95_ms=57.0 total_p50_ms=330.5 total_p95_ms=338.6
+label=ctxtrim hist=3000w(fits) c=16 ok=320 errors=0 body_bytes=23180 wall_s=6.7 ttft_p50_ms=57.5 ttft_p95_ms=69.1 total_p50_ms=336.6 total_p95_ms=349.1
+label=ctxtrim hist=12000w(trimmed) c=16 ok=320 errors=0 body_bytes=92270 wall_s=6.9 ttft_p50_ms=72.2 ttft_p95_ms=86.5 total_p50_ms=344.1 total_p95_ms=363.6
 # direct with 12000 words of history (no trim) must fail:
 label=direct  hist=12000w c=4 ok=0 errors=8 body_bytes=92270 wall_s=0.0 ttft_p50_ms=0.0 ttft_p95_ms=0.0 total_p50_ms=0.0 total_p95_ms=0.0
 (exit 1 = errors, as expected)
@@ -18,4 +18,4 @@ ctxtrim_dropped_messages_total 33600
 ctxtrim_truncated_requests_total 0
 ctxtrim_rejected_requests_total 0
 ctxtrim_unparsed_requests_total 0
-ctxtrim_trim_seconds_total 8.35608873
+ctxtrim_trim_seconds_total 9.165305869
