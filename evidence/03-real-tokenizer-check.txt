@@ -1,0 +1,10 @@
+--- path: api
+requests checked: 40
+over the 8192-token window by the REAL tokenizer: 0
+fullest request: seq 15: real prompt 5558 + max_tokens 512 = 6070 (74.1% of window; fakellm's own count was 5924)
+--- path: portal
+requests checked: 40
+over the 8192-token window by the REAL tokenizer: 0
+fullest request: seq 15: real prompt 5584 + max_tokens 512 = 6096 (74.4% of window; fakellm's own count was 5957)
+--- persona present as first message in every portal-path request:
+40 of 40

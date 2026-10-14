@@ -1,0 +1,36 @@
+# compose demo: edge (Caddy) -> ctxtrim -> api-1/api-2 (fakellm, 8192); portal-shim -> api-1
+2026-10-14T20:53:17Z
+commit: 1350fdbe681abc72a086b19d4b36713a3e98306c
+api-1 ctxtrim-poc:local running 
+api-2 ctxtrim-poc:local running 
+ctxtrim ctxtrim-poc:local running 
+edge caddy:2.10.2-alpine@sha256:4c6e91c6ed0e2fa03efd5b44747b625fec79bc9cd06ac5235a779726618e530d running 80/tcp, 443/tcp, 2019/tcp, 443/udp, 127.0.0.1:18480->8080/tcp
+portal-shim ctxtrim-poc:local running 127.0.0.1:18482->8080/tcp
+
+[before] turn 10: 400  history= 20 msgs,  23128 chars sent, real tokens 7648 + 512 max_tokens: This model's maximum context length is 8192 tokens. However, you requested 8621 tokens (8109 in the messages, 512 in the completion). Please reduce the length o
+[before] full client-side history at the end: 6946 real Qwen3 tokens
+[api] turn 40: 200  history= 81 msgs,  93236 chars sent, dropped by trim=66
+[api] full client-side history at the end: 31359 real Qwen3 tokens
+[portal] turn 40: 200  history= 81 msgs,  93245 chars sent, dropped by trim=66
+[portal] full client-side history at the end: 31368 real Qwen3 tokens
+RESULT: PASS (before fails at turn 10; api 40/40; portal 40/40)
+
+# bench through the edge: Caddy -> ctxtrim -> 2 replicas, vs the demo-only bypass route
+label=edge-bypass  hist=3000w c=4 ok=80 errors=0 body_bytes=23180 wall_s=6.2 ttft_p50_ms=53.5 ttft_p95_ms=55.0 total_p50_ms=310.8 total_p95_ms=318.3
+label=edge+ctxtrim hist=3000w c=4 ok=80 errors=0 body_bytes=23180 wall_s=6.2 ttft_p50_ms=52.9 ttft_p95_ms=58.9 total_p50_ms=308.8 total_p95_ms=313.3
+label=edge-bypass  hist=3000w c=8 ok=160 errors=0 body_bytes=23180 wall_s=6.3 ttft_p50_ms=51.9 ttft_p95_ms=54.6 total_p50_ms=310.9 total_p95_ms=322.4
+label=edge+ctxtrim hist=3000w c=8 ok=160 errors=0 body_bytes=23180 wall_s=6.2 ttft_p50_ms=52.2 ttft_p95_ms=56.0 total_p50_ms=310.2 total_p95_ms=315.5
+label=edge-bypass  hist=3000w c=16 ok=320 errors=0 body_bytes=23180 wall_s=6.3 ttft_p50_ms=51.6 ttft_p95_ms=53.8 total_p50_ms=314.3 total_p95_ms=319.9
+label=edge+ctxtrim hist=3000w c=16 ok=320 errors=0 body_bytes=23180 wall_s=6.3 ttft_p50_ms=52.5 ttft_p95_ms=54.1 total_p50_ms=316.7 total_p95_ms=319.1
+
+# hardening of the running containers
+/ctxtrim-poc-api-1-1 user=nonroot read_only=true cap_drop=[ALL] cap_add=[]
+/ctxtrim-poc-api-2-1 user=nonroot read_only=true cap_drop=[ALL] cap_add=[]
+/ctxtrim-poc-ctxtrim-1 user=nonroot read_only=true cap_drop=[ALL] cap_add=[]
+/ctxtrim-poc-edge-1 user= read_only=true cap_drop=[ALL] cap_add=[CAP_NET_BIND_SERVICE]
+/ctxtrim-poc-portal-shim-1 user=nonroot read_only=true cap_drop=[ALL] cap_add=[]
+
+# last ctxtrim trim log lines
+{"time":"2026-10-14T20:53:22.997788761Z","level":"INFO","msg":"context trimmed","dropped":62,"truncated":false,"est_before":38155,"est_after":6941,"budget":7424}
+{"time":"2026-10-14T20:53:23.124525018Z","level":"INFO","msg":"context trimmed","dropped":64,"truncated":false,"est_before":39146,"est_after":6939,"budget":7424}
+{"time":"2026-10-14T20:53:23.251873781Z","level":"INFO","msg":"context trimmed","dropped":66,"truncated":false,"est_before":40065,"est_after":6660,"budget":7424}

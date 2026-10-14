@@ -1,0 +1,8 @@
+# go test ./trim/ -run '^$' -bench Fit -benchmem   (commit 1350fdb)
+# conversation(turns, 150 words/message); window 8192. 10 turns fits (no rewrite); 40/160 turns are trimmed.
+cpu: Intel(R) Core(TM) i7-10700K CPU @ 3.80GHz
+BenchmarkFit10Turns-16     	    2892	   1920783 ns/op	   9.87 MB/s	   94882 B/op	     272 allocs/op
+BenchmarkFit40Turns-16     	     153	   8807788 ns/op	   8.57 MB/s	  543536 B/op	     945 allocs/op
+BenchmarkFit160Turns-16    	      31	  34909956 ns/op	   8.64 MB/s	 2079270 B/op	    3590 allocs/op
+# encoding/json baseline on this host/toolchain: unmarshalling ~19 KB into []json.RawMessage ran at ~20 MB/s,
+# so JSON parsing, not the estimator, dominates the trim cost (pprof: >75% in encoding/json).
