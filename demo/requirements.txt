@@ -1,0 +1,2 @@
+openai==1.109.1
+tokenizers==0.22.1

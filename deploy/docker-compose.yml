@@ -1,0 +1,68 @@
+# Self-contained demo stack: edge (Caddy) -> ctxtrim -> 2 API replicas (fakellm, 8192-token limit),
+# plus a portal-style shim that injects a persona and trims in-process.
+# Own project name and loopback-only ports 18480-18482 so it cannot collide with a real gateway.
+#   docker compose -p ctxtrim-poc -f deploy/docker-compose.yml up -d --build
+name: ctxtrim-poc
+
+x-hardening: &hardening
+  read_only: true
+  cap_drop: [ALL]
+  security_opt: ["no-new-privileges:true"]
+  restart: unless-stopped
+
+services:
+  api-1: &api
+    <<: *hardening
+    build: ..
+    image: ctxtrim-poc:local
+    entrypoint: ["/usr/local/bin/fakellm"]
+    environment:
+      FAKE_LISTEN: ":8080"
+      FAKE_MAX_MODEL_LEN: "8192"
+      FAKE_TTFT_MS: "50"
+      FAKE_TOKEN_MS: "5"
+    networks: [internal]
+  api-2:
+    <<: *api
+
+  ctxtrim:
+    <<: *hardening
+    image: ctxtrim-poc:local
+    depends_on: [api-1, api-2]
+    environment:
+      CTXTRIM_LISTEN: ":8080"
+      CTXTRIM_UPSTREAMS: "http://api-1:8080,http://api-2:8080"
+      CTXTRIM_WINDOW_TOKENS: "8192"     # = the inference server's context limit (vLLM --max-model-len)
+      CTXTRIM_DEFAULT_MAX_TOKENS: "1024"
+      CTXTRIM_ON_OVERSIZE: "reject"
+    networks: [internal]
+
+  portal-shim:
+    <<: *hardening
+    image: ctxtrim-poc:local
+    entrypoint: ["/usr/local/bin/personashim"]
+    depends_on: [api-1]
+    environment:
+      SHIM_LISTEN: ":8080"
+      SHIM_UPSTREAM: "http://api-1:8080"
+      SHIM_PERSONA: "You are Pebble, the family's home assistant. Be warm and brief."
+      CTXTRIM_WINDOW_TOKENS: "8192"
+    networks: [internal, edge]
+    ports: ["127.0.0.1:18482:8080"]
+
+  edge:
+    <<: *hardening
+    image: caddy:2.10.2-alpine@sha256:4c6e91c6ed0e2fa03efd5b44747b625fec79bc9cd06ac5235a779726618e530d
+    depends_on: [ctxtrim, api-1, api-2]
+    volumes: ["./Caddyfile:/etc/caddy/Caddyfile:ro"]
+    tmpfs: ["/data", "/config"]
+    # The official caddy binary carries a file capability (cap_net_bind_service); with cap_drop ALL the
+    # exec fails ("operation not permitted"). Either add the one capability back (done here) or build
+    # Caddy without it (xcaddy with XCADDY_SETCAP=0) on a distroless base.
+    cap_add: [NET_BIND_SERVICE]
+    networks: [internal, edge]
+    ports: ["127.0.0.1:18480:8080"]
+
+networks:
+  internal: {internal: true}
+  edge: {}

@@ -1,0 +1,40 @@
+# Edge for the compose demo. In a real gateway this is where TLS, auth pre-checks, body limits and
+# rate limits live. The only Phase-6 change is the @chat route: chat/completions goes to ctxtrim,
+# everything else goes straight to the API replicas.
+{
+	admin off
+	auto_https off
+}
+
+:8080 {
+	request_body {
+		max_size 4MB
+	}
+
+	# DEMO ONLY: /bypass/v1/... skips ctxtrim so the "before" overflow can be shown. Remove in real use.
+	handle_path /bypass/* {
+		reverse_proxy api-1:8080 api-2:8080
+	}
+
+	@chat {
+		method POST
+		path /v1/chat/completions
+	}
+	handle @chat {
+		reverse_proxy ctxtrim:8080 {
+			flush_interval -1
+		}
+	}
+
+	handle /v1/* {
+		# No passive health checks: a client's bad request must not eject an upstream.
+		reverse_proxy api-1:8080 api-2:8080 {
+			lb_policy round_robin
+			flush_interval -1
+		}
+	}
+
+	handle {
+		respond `{"error":{"message":"not found"}}` 404
+	}
+}
